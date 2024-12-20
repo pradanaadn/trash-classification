@@ -1,1 +1,2 @@
-# trash-detection
+# Trash Classification
+

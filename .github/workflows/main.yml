@@ -14,19 +14,26 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
-      # Checkout the repository
+      - name: Install Git LFS
+        run: |
+          apt-get update
+          apt-get install -y git-lfs
+          git lfs install
+
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          
       - uses: actions/checkout@v3
         with:
           lfs: true
 
-      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      # Install dependencies
       - name: Install dependencies
         run: |
           python -m venv .venv

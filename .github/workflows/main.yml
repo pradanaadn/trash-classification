@@ -19,14 +19,16 @@ jobs:
           apt-get update
           apt-get install -y git-lfs
           git lfs install
+      - name: Install pip
+        run: |
+            apt-get update
+            apt-get install -y python3-pip
 
       - uses: actions/checkout@v3
         with:
           lfs: true
+
           
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
 
       - name: Set up Python
         uses: actions/setup-python@v4

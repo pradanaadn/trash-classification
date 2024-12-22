@@ -13,57 +13,60 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v3
         with:
           lfs: true
 
-      - uses: iterative/setup-cml@v2
-
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12' # Specify your Python version
+          python-version: '3.12'
           cache: 'pip'
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
+
+      # Login to Weights & Biases
       - name: Login to Wandb
         env:
-          KEY: ${{ secrets.WANDB_API_KEY }}
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
-         wandb login $KEY
+          source .venv/bin/activate
+          wandb login $WANDB_API_KEY
 
-      - name: Login to HF
+      # Login to Hugging Face
+      - name: Login to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }} 
         run: |
+          source .venv/bin/activate
           huggingface-cli login --token $HF_TOKEN
 
+      # Run Training Script
       - name: Train
         run: |
           source .venv/bin/activate
           python main.py
 
-
+      # Upload Artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: model-artifacts
           path: |
-            
             export/confusion_matrix.png
-            # Add other model files here
 
+      # Generate and Post CML Report
       - name: Report Results with CML
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo '## Confusion Matrix Plot' >> report.md
           echo '![Confusion Matrix](export/confusion_matrix.png)' >> report.md
-
-
-

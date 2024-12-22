@@ -21,7 +21,7 @@ def main():
             "repo_name":"CI_CD_TEST",
             "architecture": "Trashmobilenet-1",
             "dataset": "FastJobs/Visual_Emotional_Analysis",
-            "epochs": 1,
+            "epochs": 5,
             "device": "cpu",
             "early_stopping_patience": 3,
             "train_batch_size": 16,

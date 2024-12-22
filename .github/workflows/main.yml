@@ -14,17 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Git LFS
-        run: |
-          apt-get update
-          apt-get install -y git-lfs
-          git lfs install
-      
+  
       - uses: actions/checkout@v3
         with:
           lfs: true
       - uses: iterative/setup-cml@v1
-      
+
       - name: Setup Python Environment
         run: |
           python3 -m pip install --upgrade pip

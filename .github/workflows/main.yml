@@ -12,21 +12,19 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: docker://ghcr.io/iterative/cml:0-dvc2-base1
-      env:
-        PYTHONPATH: /usr/local/lib/python3.10/site-packages
+
     steps:
       - name: Install Git LFS
         run: |
           apt-get update
           apt-get install -y git-lfs
           git lfs install
-
+      
       - uses: actions/checkout@v3
         with:
           lfs: true
-
+      - uses: iterative/setup-cml@v1
+      
       - name: Setup Python Environment
         run: |
           python3 -m pip install --upgrade pip

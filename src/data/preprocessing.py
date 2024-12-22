@@ -41,8 +41,8 @@ def preprocessing(data_train, data_val, data_test, image_size=(224, 224)):
             v2.Resize(size=image_sizes),
             v2.ToImage(),
             v2.ToDtype(torch.float32, scale=True),
-            # v2.RandomHorizontalFlip(p=0.5),
-            # v2.RandomVerticalFlip(p=0.5),
+            v2.RandomHorizontalFlip(p=0.5),
+            v2.RandomVerticalFlip(p=0.5),
         ]
     )
     transform_val = v2.Compose(

@@ -11,18 +11,18 @@ from src.models.model import TrashMobileNet
 
 
 def main():
-    data_loading = load_dataset("FastJobs/Visual_Emotional_Analysis", split="train")
+    data_loading = load_dataset("garythung/trashnet", split="train")
     label = data_loading.features["label"].names
     os.makedirs("export", exist_ok=True)
     runs = wandb.init(
-        project="CI_CD_TEST",
-        name="CI_CD_TEST",
+        project="ci_cd_Trash_Classification",
+        name="ci_cd_Trash_Classification",
         config={
             "learning_rate": 0.001,
-            "repo_name":"CI_CD_TEST",
+            "repo_name":"ci_cd_Trash_Classification",
             "architecture": "Trashmobilenet-1",
-            "dataset": "FastJobs/Visual_Emotional_Analysis",
-            "epochs": 5,
+            "dataset": "garythung/trashnet",
+            "epochs": 1,
             "device": "cpu",
             "early_stopping_patience": 3,
             "train_batch_size": 16,

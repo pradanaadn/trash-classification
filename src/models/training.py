@@ -4,7 +4,7 @@ from tqdm import tqdm
 from loguru import logger
 from src.callback.earlystopping import EarlyStopping
 from src.metric.metric import create_metrics
-from src.models.evaluation import test_evaluation
+from src.models.evaluation import test_evaluation, metric_to_md_table
 
 def training_loop(model, criterion, optimizer, dl_train, dl_val, dl_test, wandb):
     config = wandb.config
@@ -109,6 +109,8 @@ def training_loop(model, criterion, optimizer, dl_train, dl_val, dl_test, wandb)
         )
         model.load_state_dict(torch.load(early_stopping.best_path))
         test_evaluation(model, criterion, dl_test, wandb)
+        metric_to_md_table(wandb.summary._as_dict())
+        logger.info(wandb.summary._as_dict())
     except Exception as e:
         logger.error(f"Error linking model to wandb: {str(e)}")
 

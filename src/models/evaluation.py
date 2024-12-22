@@ -80,3 +80,13 @@ def confusion_matrix_test(model, dl_test, wandb, criterion, label_str):
 
 
     return metric
+
+
+
+def metric_to_md_table(metric:dict):
+    markdown_table = "| Key | Value |\n|-----|-------|\n"
+    for key, value in metric.items():
+        markdown_table += f"| {key} | {value} |\n"
+    with open("export/metric.md", "w") as file:
+        file.write(markdown_table)
+    

@@ -12,6 +12,7 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       # Checkout the repository
       - uses: actions/checkout@v3
@@ -62,11 +63,14 @@ jobs:
           name: model-artifacts
           path: |
             export/confusion_matrix.png
-
+            checkpoints/best_model.pth
       # Generate and Post CML Report
       - name: Report Results with CML
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo '## Training Summary' >> report.md
+          cat export/metric.md >> report.md
           echo '## Confusion Matrix Plot' >> report.md
           echo '![Confusion Matrix](export/confusion_matrix.png)' >> report.md
+          cml comment create report.md

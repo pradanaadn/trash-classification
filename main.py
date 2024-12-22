@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import torch.optim as optim
 import torch.nn as nn
 import wandb
+import os
 from datasets import load_dataset
 from src.data.preprocessing import data_loader, split_dataset, preprocessing
 from src.models.training import training_loop
@@ -12,7 +13,7 @@ from src.models.model import TrashMobileNet
 def main():
     data_loading = load_dataset("FastJobs/Visual_Emotional_Analysis", split="train")
     label = data_loading.features["label"].names
-
+    os.makedirs("export", exist_ok=True)
     runs = wandb.init(
         project="CI_CD_TEST",
         name="CI_CD_TEST",

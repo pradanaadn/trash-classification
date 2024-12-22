@@ -1,0 +1,69 @@
+name: ML Workflow
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - uses: iterative/setup-cml@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12' # Specify your Python version
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Login to Wandb
+        env:
+          KEY: ${{ secrets.WANDB_API_KEY }}
+        run: |
+          make wandb-login KEY=$KEY
+
+      - name: Login to HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }} 
+        run: |
+          make hf-login HF_TOKEN=$HF_TOKEN
+
+      - name: Train
+        run: |
+          source .venv/bin/activate
+          python main.py
+
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-artifacts
+          path: |
+            
+            export/confusion_matrix.png
+            # Add other model files here
+
+      - name: Report Results with CML
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo '## Confusion Matrix Plot' >> report.md
+          echo '![Confusion Matrix](export/confusion_matrix.png)' >> report.md
+
+
+

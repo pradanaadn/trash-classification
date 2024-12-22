@@ -1,7 +1,8 @@
 from pathlib import Path
 from loguru import logger
 import torch
-from huggingface_hub import  create_branch
+from huggingface_hub import create_branch, create_repo
+
 
 class EarlyStopping:
     def __init__(
@@ -42,16 +43,19 @@ class EarlyStopping:
         logger.info("Saving best model")
         torch.save(model.state_dict(), self.best_path)
         try:
+            create_repo(repo_id=f"pradanaadn/{self.config.repo_name}", exist_ok=True)
+
             create_branch(
-                repo_id="pradanaadn/trash-clasification",
+                repo_id=f"pradanaadn/{self.config.repo_name}",
                 repo_type="model",
                 branch=self.config.architecture,
                 exist_ok=True,
             )
             model.push_to_hub(
-                repo_id="pradanaadn/trash-clasification",
+                repo_id=f"pradanaadn/{self.config.repo_name}",
                 commit_message=f"Save best model checkpoint with F1-Score Macro {self.best_score}",
                 branch=self.config.architecture,
+                
             )
             logger.success(
                 f"Success Saving best model with F1-Score Macro {self.best_score} "
